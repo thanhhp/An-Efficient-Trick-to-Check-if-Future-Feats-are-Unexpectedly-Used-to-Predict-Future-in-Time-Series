@@ -15,7 +15,8 @@ import pandas as pd
 x = np.arange(0,1000,1)
 df = pd.DataFrame(data=x, columns=["Values"])
 
-# 3. We use this df in our preparation function for deep learning models. 
+# 3. We use this df in our preparation function (assume you already have this function, and you want to test if it used future values in the feature set)
+# for deep learning models. 
 # We assume that first many columns of df2 are features and the rest are target values.
 df2 = data_prep(df)
 
