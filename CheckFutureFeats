@@ -1,0 +1,32 @@
+When doing prediction of future values in time series using models like LSTM, 
+sometimes there is a mistake in preparation of data that future values are unexpectedly
+put into the feature set for prediction. This is generally not good as we want to use only known (past) feats 
+till the time t to predict values at later times. So how to check if our prepared data for training has added wrong future values in the feature set.
+
+Note: We do not cover the exception that sometimes we can use predicted values of a time series to predict future values of another time series.
+
+The trick is easy!
+
+# 1. We import necessary packages.
+import numpy as np
+import pandas as pd
+
+# 2. We can create a dummy pd dataframe with a value column growing along with time. Index is made with time = 0 to n
+x = np.arange(0,1000,1)
+df = pd.DataFrame(data=x, columns=["Values"])
+
+# 3. We use this df in our preparation function for deep learning models. 
+# We assume that first many columns of df2 are features and the rest are target values.
+df2 = data_prep(df)
+
+# 4. We calculate the difference between index and column values.
+for column in df2.columns:
+    df2[column] = df2.index - df2[column]
+    
+# 5. Check the feats if they include future values. feat_nums is the number of features.
+# If this returns an empty array, then we don't use future values as features.
+np.where( df2[df2.columns[:feat_nums]].values < 0 )
+
+# 6. We are also able to check the targets if they have past values inside as well.
+# If this returns an empty array, this passes.
+np.where( df2[df2.columns[feat_nums:]].values > 0 )
